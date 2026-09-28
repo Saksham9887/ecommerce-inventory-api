@@ -4,6 +4,22 @@ from db import Database, CATEGORIES
 from cart import Cart
 from order import place_order
 
+import os
+from models import Clothing, Footwear
+
+def seed_if_empty():
+    db = Database("shop.db")
+    if db.is_empty():
+        for p in [
+            Clothing(1, "Denim Jacket", 2000, 5),
+            Footwear(2, "Running Shoes", 3000, 2),
+            Clothing(3, "Cotton T-Shirt", 800, 20),
+        ]:
+            db.save_product(p)
+    db.conn.close()
+
+seed_if_empty()
+
 app = Flask(__name__)
 
 
@@ -125,4 +141,5 @@ def create_order():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
